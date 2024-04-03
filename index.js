@@ -1,186 +1,206 @@
-// Select all the elements in the HTML page
-// and assign them to a variable
-let now_playing = document.querySelector(".now-playing");
-let track_art = document.querySelector(".track-art");
-let track_name = document.querySelector(".track-name");
-let track_artist = document.querySelector(".track-artist");
-
-let playpause_btn = document.querySelector(".playpause-track");
-let next_btn = document.querySelector(".next-track");
-let prev_btn = document.querySelector(".prev-track");
-
-let seek_slider = document.querySelector(".seek_slider");
-let volume_slider = document.querySelector(".volume_slider");
-let curr_time = document.querySelector(".current-time");
-let total_duration = document.querySelector(".total-duration");
-
-// Specify globally used values
-let track_index = 0;
-let isPlaying = false;
-let updateTimer;
-
-// Create the audio element for the player
-let curr_track = document.createElement('audio');
-
-// Define the list of tracks that have to be played
-let track_list = [
-{
-	name: "Night Owl",
-	artist: "Broke For Free",
-	image: "Image URL",
-	path: "Night_Owl.mp3"
-},
-{
-	name: "Enthusiast",
-	artist: "Tours",
-	image: "Image URL",
-	path: "Enthusiast.mp3"
-},
-{
-	name: "Shipping Lanes",
-	artist: "Chad Crouch",
-	image: "Image URL",
-	path: "Shipping_Lanes.mp3",
-},
-];
-
-function loadTrack(track_index) {
-// Clear the previous seek timer
-clearInterval(updateTimer);
-resetValues();
-
-// Load a new track
-curr_track.src = track_list[track_index].path;
-curr_track.load();
-
-// Update details of the track
-track_art.style.backgroundImage = 
-	"url(" + track_list[track_index].image + ")";
-track_name.textContent = track_list[track_index].name;
-track_artist.textContent = track_list[track_index].artist;
-now_playing.textContent = 
-	"PLAYING " + (track_index + 1) + " OF " + track_list.length;
-
-// Set an interval of 1000 milliseconds
-// for updating the seek slider
-updateTimer = setInterval(seekUpdate, 1000);
-
-// Move to the next track if the current finishes playing
-// using the 'ended' event
-curr_track.addEventListener("ended", nextTrack);
-
-// Apply a random background color
-random_bg_color();
-}
-
-function random_bg_color() {
-// Get a random number between 64 to 256
-// (for getting lighter colors)
-let red = Math.floor(Math.random() * 256) + 64;
-let green = Math.floor(Math.random() * 256) + 64;
-let blue = Math.floor(Math.random() * 256) + 64;
-
-// Construct a color with the given values
-let bgColor = "rgb(" + red + ", " + green + ", " + blue + ")";
-
-// Set the background to the new color
-document.body.style.background = bgColor;
-}
-
-// Function to reset all values to their default
-function resetValues() {
-curr_time.textContent = "00:00";
-total_duration.textContent = "00:00";
-seek_slider.value = 0;
-}
-function playpauseTrack() {
-// Switch between playing and pausing
-// depending on the current state
-if (!isPlaying) playTrack();
-else pauseTrack();
-}
-
-function playTrack() {
-// Play the loaded track
-curr_track.play();
-isPlaying = true;
-
-// Replace icon with the pause icon
-playpause_btn.innerHTML = '<i class="fa fa-pause-circle fa-5x"></i>';
-}
-
-function pauseTrack() {
-// Pause the loaded track
-curr_track.pause();
-isPlaying = false;
-
-// Replace icon with the play icon
-playpause_btn.innerHTML = '<i class="fa fa-play-circle fa-5x"></i>';
-}
-
-function nextTrack() {
-// Go back to the first track if the
-// current one is the last in the track list
-if (track_index < track_list.length - 1)
-	track_index += 1;
-else track_index = 0;
-
-// Load and play the new track
-loadTrack(track_index);
-playTrack();
-}
-
-function prevTrack() {
-// Go back to the last track if the
-// current one is the first in the track list
-if (track_index > 0)
-	track_index -= 1;
-else track_index = track_list.length - 1;
-
-// Load and play the new track
-loadTrack(track_index);
-playTrack();
-}
-function seekTo() {
-// Calculate the seek position by the
-// percentage of the seek slider 
-// and get the relative duration to the track
-seekto = curr_track.duration * (seek_slider.value / 100);
-
-// Set the current track position to the calculated seek position
-curr_track.currentTime = seekto;
-}
-
-function setVolume() {
-// Set the volume according to the
-// percentage of the volume slider set
-curr_track.volume = volume_slider.value / 100;
-}
-
-function seekUpdate() {
-let seekPosition = 0;
-
-// Check if the current track duration is a legible number
-if (!isNaN(curr_track.duration)) {
-	seekPosition = curr_track.currentTime * (100 / curr_track.duration);
-	seek_slider.value = seekPosition;
-
-	// Calculate the time left and the total duration
-	let currentMinutes = Math.floor(curr_track.currentTime / 60);
-	let currentSeconds = Math.floor(curr_track.currentTime - currentMinutes * 60);
-	let durationMinutes = Math.floor(curr_track.duration / 60);
-	let durationSeconds = Math.floor(curr_track.duration - durationMinutes * 60);
-
-	// Add a zero to the single digit time values
-	if (currentSeconds < 10) { currentSeconds = "0" + currentSeconds; }
-	if (durationSeconds < 10) { durationSeconds = "0" + durationSeconds; }
-	if (currentMinutes < 10) { currentMinutes = "0" + currentMinutes; }
-	if (durationMinutes < 10) { durationMinutes = "0" + durationMinutes; }
-
-	// Display the updated duration
-	curr_time.textContent = currentMinutes + ":" + currentSeconds;
-	total_duration.textContent = durationMinutes + ":" + durationSeconds;
-}
-}
-
-loadTrack(track_index);
+function printpdf() {
+    var content = document.getElementById("resume");
+  
+    const allButtons = document.querySelectorAll("#print button");
+    allButtons.forEach(button => {
+        button.classList.add("none");
+    });
+    let allInputCheckboxes = document.querySelectorAll(".input-checkbox");
+    allInputCheckboxes.forEach(input => {
+        input.classList.add("none");
+    })
+  
+  allButtons.forEach(button => {
+      button.classList.remove("none");
+  })
+  allInputCheckboxes.forEach(input => {
+      input.classList.remove("none");
+  })
+  
+    html2pdf(content, {
+        html2canvas: { scale: 1, logging: true, dpi: 500 }
+    });
+  }
+  
+  function addedu() {
+    const head = document.createElement('div');
+    document.getElementById("education").appendChild(head);
+    head.innerHTML = ('<div class="edublock"><span><input type="checkbox" class="input-checkbox"></span><span class="education-head" contenteditable="true">YOUR DEGREE</span><div ><span contenteditable="true">Institute name</span> - <span contenteditable="true">Passing Year</span></div></div>');
+    saveresume();
+  }
+  function remedu(event) {
+    let val = 0;
+    let empty = true;
+    const allInputCheckboxes = event.target.parentElement.getElementsByClassName("input-checkbox");
+    const array = Array.from(allInputCheckboxes);
+    if (array.length === 0) {
+        alert("No fields are present to be deleted!")
+    }
+    else {
+        console.log(array);
+        array.forEach(element => {
+            if (element.checked === true) {
+                val = 1;
+                element.parentElement.parentElement.remove();
+            }
+        })
+        if (val === 0) alert("Please select the checkboxes to delete the required field!")
+    }
+    saveresume();
+  }
+  
+  
+  function addskill() {
+    const head = document.createElement('div');
+    document.getElementById("skills").appendChild(head);
+    head.innerHTML = ('<div class="skill"><span><input type="checkbox" class="input-checkbox"></span><span><i class="fas fa-chevron-circle-right"></i></span>   <span contenteditable="true">write your skill here</span></div>');
+    saveresume();
+  }
+  
+  function remskill(event) {
+    let val = 0;
+    const allInputCheckboxes = event.target.parentElement.getElementsByClassName("input-checkbox");
+    const array = Array.from(allInputCheckboxes);
+    if (array.length === 0) {
+        alert("No fields are present to be deleted!")
+    }
+    else {
+        console.log(array);
+        array.forEach(element => {
+            if (element.checked === true) {
+                val = 1;
+                element.parentElement.parentElement.remove();
+            }
+        })
+        if (val === 0) alert("Please select the checkboxes to delete the required field!")
+    }
+    saveresume();
+  }
+  
+  
+  function addLang() {
+    const head = document.createElement('div');
+    document.getElementById("languages").appendChild(head);
+    head.innerHTML = ('<div class="language"><span><input type="checkbox" class="input-checkbox"></span><span contenteditable="true">LANGNAME</span> - <span contenteditable="true">level u know</span></div>');
+    saveresume();
+  }
+  function remLang(event) {
+    let val = 0;
+    const allInputCheckboxes = event.target.parentElement.getElementsByClassName("input-checkbox");
+    const array = Array.from(allInputCheckboxes);
+    if (array.length === 0) {
+        alert("No fields are present to be deleted!")
+    }
+    else {
+        console.log(array);
+        array.forEach(element => {
+            if (element.checked === true) {
+                val = 1;
+                element.parentElement.parentElement.remove();
+            }
+        })
+        if (val === 0) alert("Please select the checkboxes to delete the required field!")
+    }
+    saveresume();
+  }
+  
+  
+  function addAch() {
+    const head = document.createElement('div');
+    document.getElementById("achievement").appendChild(head);
+    head.innerHTML = ('<div class="achieve" ><span><input type="checkbox" class="input-checkbox"></span><span contenteditable="true">Write your achievement</span></div>');
+    saveresume();
+  }
+  function remAch(event) {
+    let val = 0;
+    const allInputCheckboxes = event.target.parentElement.getElementsByClassName("input-checkbox");
+    const array = Array.from(allInputCheckboxes);
+    if (array.length === 0) {
+        alert("No fields are present to be deleted!")
+    }
+    else {
+        console.log(array);
+        array.forEach(element => {
+            if (element.checked === true) {
+                val = 1;
+                element.parentElement.parentElement.remove();
+            }
+        })
+        if (val === 0) alert("Please select the checkboxes to delete the required field!")
+    }
+    saveresume();
+  }
+  
+  
+  function addInt() {
+    const head = document.createElement('div');
+    document.getElementById("interest").appendChild(head);
+    head.innerHTML = ('<div class="achieve" ><span><input type="checkbox" class="input-checkbox"></span><span contenteditable="true">Write interest</span></div>');
+    saveresume();
+  }
+  function remInt(event) {
+    let val = 0;
+    const allInputCheckboxes = event.target.parentElement.getElementsByClassName("input-checkbox");
+    const array = Array.from(allInputCheckboxes);
+    if (array.length === 0) {
+        alert("No fields are present to be deleted!")
+    }
+    else {
+        array.forEach(element => {
+            if (element.checked === true) {
+                val = 1;
+                element.parentElement.parentElement.remove();
+            }
+        })
+        if (val === 0) alert("Please select the checkboxes to delete the required field!")
+    }
+    saveresume();
+  }
+  
+  let maxNewSection = 1;
+  function addsec() {
+    if (maxNewSection < 2) {
+        const head = document.createElement('div');
+        document.getElementById("newsec").appendChild(head);
+        if (maxNewSection === 0) {
+            head.innerHTML = ('<div><span><input type="checkbox" class="input-checkbox"></span><span class="title" contenteditable="true">NEW SECTION</span><br><br><div contenteditable="true">This is the description part of your new section. Try to stay within limit and write something which has less than 400 characters. The spaces and symbols you use will also be included so use them for an indentation effect.</div></div>');
+        }
+        else {
+            head.innerHTML = ('<div><br><br><span><input type="checkbox" class="input-checkbox"></span><span class="title" contenteditable="true">NEW SECTION</span><br><br><div contenteditable="true">This is the description part of your new section. Try to stay within limit and write something which has less than 400 characters. The spaces and symbols you use will also be included so use them for an indentation effect.</div></div>');
+        }
+  
+        maxNewSection = maxNewSection + 1;
+    }
+    else {
+        alert("Atmost 2 NEW SECTION can be added!")
+  
+    }
+    saveresume();
+  }
+  function remsec(event) {
+    let val = 0;
+    const allInputCheckboxes = event.target.parentElement.getElementsByClassName("input-checkbox");
+    const array = Array.from(allInputCheckboxes);
+    if (array.length === 0) {
+        alert("No fields are present to be deleted!")
+    }
+    else {
+        console.log(array);
+        array.forEach(element => {
+            if (element.checked === true) {
+                val = 1;
+                maxNewSection = maxNewSection - 1;
+                element.parentElement.parentElement.remove();
+            }
+        })
+        if (val === 0) alert("Please select the checkboxes to delete the required field!")
+    }
+    saveresume();
+  }
+  
+  function saveresume() {
+    var sec = document.getElementById("print");
+    value1 = sec.innerHTML;
+    var info = document.getElementById("custinfo");
+    info.value = value1;
+  }
