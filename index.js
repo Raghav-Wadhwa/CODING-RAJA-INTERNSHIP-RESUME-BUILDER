@@ -1,33 +1,40 @@
 function printpdf() {
     var content = document.getElementById("resume");
-  
+
+    // Hide buttons and checkboxes temporarily
     const allButtons = document.querySelectorAll("#print button");
-    allButtons.forEach(button => {
-        button.classList.add("none");
-    });
-    let allInputCheckboxes = document.querySelectorAll(".input-checkbox");
-    allInputCheckboxes.forEach(input => {
-        input.classList.add("none");
-    })
-  
-  allButtons.forEach(button => {
-      button.classList.remove("none");
-  })
-  allInputCheckboxes.forEach(input => {
-      input.classList.remove("none");
-  })
-  
-    html2pdf(content, {
-        html2canvas: { scale: 1, logging: true, dpi: 500 }
-    });
-  }
-  
-  function addedu() {
+    const allInputCheckboxes = document.querySelectorAll(".input-checkbox");
+
+    allButtons.forEach(button => button.classList.add("none"));
+    allInputCheckboxes.forEach(input => input.classList.add("none"));
+
+    // Generate the PDF
+    html2pdf()
+        .from(content)
+        .save('resume.pdf') // Download the PDF
+        .then(() => {
+            // Restore buttons and checkboxes after saving the PDF
+            allButtons.forEach(button => button.classList.remove("none"));
+            allInputCheckboxes.forEach(input => input.classList.remove("none"));
+        })
+        .catch(err => {
+            console.error('Error generating PDF:', err);
+            // Restore buttons and checkboxes in case of an error
+            allButtons.forEach(button => button.classList.remove("none"));
+            allInputCheckboxes.forEach(input => input.classList.remove("none"));
+        });
+}
+
+
+
+function addedu() {
     const head = document.createElement('div');
     document.getElementById("education").appendChild(head);
     head.innerHTML = ('<div class="edublock"><span><input type="checkbox" class="input-checkbox"></span><span class="education-head" contenteditable="true">YOUR DEGREE</span><div ><span contenteditable="true">Institute name</span> - <span contenteditable="true">Passing Year</span></div></div>');
     saveresume();
-  }
+}
+
+
   function remedu(event) {
     let val = 0;
     let empty = true;
